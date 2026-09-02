@@ -1,6 +1,6 @@
 {
-    "START_DATE": "01/01/2023",
+    "START_DATE": "01/01/2022",
     "END_DATE": "01/01/2026",
-    "INTERVAL_DUR": "ME",
-    "INTERVAL_OPTIONS": ["D", "ME", "Y"]
+    "INTERVAL_DUR": "MS",
+    "INTERVAL_OPTIONS": ["D", "MS", "Y"]
 }

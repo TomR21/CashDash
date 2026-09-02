@@ -1,6 +1,6 @@
 # Project specific
 asset_types.json
-.csv
+*.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

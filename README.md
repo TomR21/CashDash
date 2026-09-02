@@ -7,9 +7,8 @@ Simple dashboarding tool to easily view all your assets and debts in a single pl
 # Structure
 The dashboard consist of 2 main categories: Assets and debts, just like a regular accounting spreadsheet. 
 
-For both assets and debts, we have 3 subcategories: 
+For both assets and debts, they are split into 3 different values: **Current value**, **amount of money put in** and **interest**. They are shown in table below. These are accumulated into a set time interval (year, month) and each value displays the cumulative amount of all time before until the starting date. 
 
-Assets
 Date | Current worth | Money put in | Interest |
 |---|---|---|---|
 | 01/01/2020  | €500  | €500  | €0  |
