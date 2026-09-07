@@ -1,6 +1,8 @@
 # Project specific
 asset_types.json
 *.csv
+*.ipynb
+test/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
