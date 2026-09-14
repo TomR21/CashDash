@@ -8,5 +8,6 @@
 
 
 ## Ideas
-- Implement single class for each type of asset (e.g. savings account, stocks, etc)? Bunq and ASN very similar structure, only differences are:
-- - Filename, Possibly raw dataset
+- Create class which stores all different assetclasses, calculates total of all input classes. 
+- - Let it be toggleable, such that it calculates only total of selected items
+- - Let items be toggleable on: Owner, Assetclass type, (subselection within AssetClass type?),  
