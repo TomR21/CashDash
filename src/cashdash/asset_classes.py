@@ -215,4 +215,4 @@ class Debt(AssetClass):
     
     
     def get_agg_data(self) -> pd.DataFrame:
-        pass
+        return self.agg_data
