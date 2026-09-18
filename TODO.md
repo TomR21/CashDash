@@ -2,6 +2,9 @@
 - Create base path based on file location, not working directory (wont work when calling program from outside the folder e.g. using shortcut). Add to settings?
 
 
+- Create toggle buttons -> Refresh/recalculate on toggle/save button?
+
+
 - Think of easiest way to update saving info
 
 

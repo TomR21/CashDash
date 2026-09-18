@@ -1,5 +1,6 @@
 # Project specific
 asset_types.json
+asset_types copy.json
 *.csv
 *.ipynb
 test/
