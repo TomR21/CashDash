@@ -24,10 +24,12 @@ debt = Debt(assets["T"]["Debt"]["DUO"])
 debt.load_data()
 debt.calc_agg_data()
 
-total_data = asn.agg_data + bunq.agg_data + stocks.agg_data + debt.agg_data
-#print("TOTAL: ", total_data)
 
-plt.plot(total_data["Current worth"])
+total_data = asn.agg_data + bunq.agg_data + stocks.agg_data + debt.agg_data
+
+plt.plot(total_data["Current worth"], color='b')
+#plt.plot(total_data["Spent"], color='b', alpha=0.5)
+#plt.fill_between(total_data.index, total_data["Current worth"], total_data["Spent"])
 #plt.plot(debt.agg_data.index, debt.agg_data["Current worth"])
 plt.xlabel("Date")
 plt.ylabel("Portfolio worth (€)")

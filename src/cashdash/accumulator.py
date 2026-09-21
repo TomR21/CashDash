@@ -1,7 +1,5 @@
 from cashdash.asset_classes import Savings, Stocks, Debt
 from pathlib import Path
-import matplotlib.pyplot as plt
-import streamlit as st
 import pandas as pd
 import json
 
@@ -56,7 +54,7 @@ class Accumulator():
         })
         
         # Store include data table and data dict in self
-        self.included_data = df_include
+        self.metadata = df_include
         self.data_dict = data_dict
             
             
@@ -65,11 +63,10 @@ class Accumulator():
 
         agg_data = None
         
-        for _, row in self.included_data.iterrows():
+        for _, row in self.metadata.iterrows():
 
             # Skip excluded assets
             if not row["TO_INCLUDE"]:
-                print("Excluded ", row["FILENAME"])
                 continue
 
             # Add agg_data of specific file to existing agg_data when present
@@ -81,9 +78,21 @@ class Accumulator():
  
         return agg_data
     
-    
-    def update(self, filename: str, toggle: bool) -> None:
-        df = self.included_data
-        df.loc[df["FILENAME"] == filename, "TO_INCLUDE"] = toggle
         
-        self.included_data = df
+    def select(self, **allowed: list) -> None:
+        """ As input takes button selection, e.g. {OWNER=["T"], ASSET_TYPE=["Stocks]}. Returns the matching filenames for selection. """
+        
+        # Create a mask value for every metadata entry 
+        mask = pd.Series(True, index=self.metadata.index)
+        
+        # Keep entries in common with the button allowed input
+        for col, values in allowed.items():
+            mask &= self.metadata[col].isin(values)
+        
+        # Set all non-masked values to False. First step required to reset state when retoggling values
+        self.metadata.loc[mask, "TO_INCLUDE"] = True
+        self.metadata.loc[~mask, "TO_INCLUDE"] = False
+        
+        # Catch situation where all options in the mask are set to False. Prevents lookup issues with otherwise empty df
+        if not mask.any():
+            raise ValueError
