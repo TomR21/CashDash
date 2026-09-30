@@ -35,7 +35,7 @@ def create_growth_figure(df: pd.DataFrame) -> Figure:
     ax.set_ylim(bottom=min(1.1*df["Current worth"].min(), 0))
     
     # Title
-    ax.set_title("Portfolio worth (€)")
+    ax.set_title("Portfolio worth")
     ax.title.set_fontweight('bold')
     
     # Change y-axis format from 10000.21, to €10k and hide ticks
@@ -53,7 +53,7 @@ def create_growth_figure(df: pd.DataFrame) -> Figure:
     return fig
 
 
-def create_nested_allocation_pie(df_dict: dict[str, pd.DataFrame], metadata: pd.DataFrame, asset_sel: list[bool]) -> Figure:
+def create_nested_allocation_pie(df_dict: dict[str, pd.DataFrame], metadata: pd.DataFrame) -> Figure:
     
     # Determines pie radius size of both pie's
     size = 0.3
@@ -65,7 +65,7 @@ def create_nested_allocation_pie(df_dict: dict[str, pd.DataFrame], metadata: pd.
         df.loc[idx, "Current worth"] = df_dict[row["FILENAME"]]["Current worth"].iloc[-2] #TODO: readjust to -1
 
     # Obtain current worth of all included assets per type and per company
-    asset_sel = [x for x in asset_sel if x != "Debt"]
+    asset_sel = [x for x in df[df["TO_INCLUDE"]]["ASSET_TYPE"].unique() if x != "Debt"] # Find included asset types except debt
     asset_vals = df[(df["ASSET_TYPE"].isin(asset_sel)) & (df["TO_INCLUDE"])].groupby("ASSET_TYPE")["Current worth"].sum()
     company_vals = df[(df["ASSET_TYPE"].isin(asset_sel)) & (df["TO_INCLUDE"])].groupby(["ASSET_TYPE", "COMPANY"])["Current worth"].sum()
         
@@ -93,7 +93,9 @@ def create_nested_allocation_pie(df_dict: dict[str, pd.DataFrame], metadata: pd.
         eb.set_va("center")
         eb.set_ha("center")
     
-    ax.set(aspect="equal", title='Pie plot with `ax.pie`')
+    ax.set(aspect="equal", title='Asset Allocation')
+    ax.title.set_fontweight('bold')
+    
     return fig   
 
 
@@ -145,5 +147,5 @@ with net_worth_area:
 
 with chart_area:
     st.pyplot(create_growth_figure(df))
-    st.pyplot(create_nested_allocation_pie(accumulator.data_dict, meta, asset_type_sel))
+    st.pyplot(create_nested_allocation_pie(accumulator.data_dict, meta))
     #st.dataframe(df.tail(10), width='stretch')
