@@ -59,7 +59,7 @@ def create_nested_allocation_pie(df_dict: dict[str, pd.DataFrame], metadata: pd.
     size = 0.3
 
     # Obtain latest worth for each included stocks and savings asset type
-    df = metadata.copy().sort_values(["ASSET_TYPE", "COMPANY"])
+    df = metadata.copy()
     df["Current worth"] = 0.
     for idx, row in df.iterrows():
         df.loc[idx, "Current worth"] = df_dict[row["FILENAME"]]["Current worth"].iloc[-2] #TODO: readjust to -1
@@ -68,20 +68,29 @@ def create_nested_allocation_pie(df_dict: dict[str, pd.DataFrame], metadata: pd.
     asset_sel = [x for x in df[df["TO_INCLUDE"]]["ASSET_TYPE"].unique() if x != "Debt"] # Find included asset types except debt
     asset_vals = df[(df["ASSET_TYPE"].isin(asset_sel)) & (df["TO_INCLUDE"])].groupby("ASSET_TYPE")["Current worth"].sum()
     company_vals = df[(df["ASSET_TYPE"].isin(asset_sel)) & (df["TO_INCLUDE"])].groupby(["ASSET_TYPE", "COMPANY"])["Current worth"].sum()
-        
+    
     # Create figure and colors
     fig, ax = plt.subplots(facecolor='#0E1117')
-    tab20c = plt.color_sequences["tab20c"]
-    outer_colors_indices = [x*4 for x in range(len(asset_vals.index.unique()))]
+    tab20c = plt.color_sequences["tab20c"] # Lower alphas of the same color, 4 step cycle
+    outer_colors_indices = [x*4 for x in range(len(asset_vals.index.unique()))]  # e.g. [0, 4, 8]
     inner_colors_indices = [[n*4 + x+1 for x in range(len(company_vals.loc[asset_sel[n]].index))] 
-                                for n in range(len(asset_vals.index.unique()))]
+                                for n in range(len(asset_vals.index.unique()))]    # e.g. [[1, 2, 3], [5], [9, 10]]
     outer_colors = [tab20c[i] for i in outer_colors_indices]
     inner_colors = [tab20c[i] for i in np.concatenate(inner_colors_indices).tolist()]
     
-    # Plot pie charts
-    ax.pie(asset_vals, radius=1, colors=outer_colors, autopct='%1.0f%%', pctdistance=1-(size/2),
-            textprops={"weight": "bold"}, wedgeprops=dict(width=size, edgecolor='w'), labels=asset_vals.index)
+    # Formatting for outer circle numbers
+    def autopct_format(values):
+        total = sum(values)
+        def my_format(pct):
+            val = int(round(pct*total/100000)) # recalculate value for each piece (cannot use values)
+            return '€{v}k\n{f:.0%}'.format(v=val, f=pct/100)
+        return my_format
     
+    # Plot pie charts
+    ax.pie(asset_vals, radius=1, colors=outer_colors, 
+                autopct=autopct_format(asset_vals), pctdistance=1-(size/2), textprops={"weight": "bold"},
+                wedgeprops=dict(width=size, edgecolor='w'), labels=asset_vals.index)
+        
     wedges, labels = ax.pie(company_vals, radius=1-size, labeldistance=1-(size), colors=inner_colors, 
             textprops={"size": 8, "weight": "bold", "color": "black"},
             wedgeprops=dict(width=size, edgecolor='w'), labels=company_vals.index.get_level_values(1))
