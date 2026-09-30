@@ -20,12 +20,13 @@ stocks = Stocks(assets["T"]["Stocks"]["DeGiro"])
 stocks.load_data()
 stocks.calc_agg_data()
 
-debt = Debt(assets["T"]["Debt"]["DUO"])
+debt = Debt(assets["R"]["Debt"]["DUO"])
 debt.load_data()
 debt.calc_agg_data()
 
 
-total_data = asn.agg_data + bunq.agg_data + stocks.agg_data + debt.agg_data
+#total_data = asn.agg_data + bunq.agg_data + stocks.agg_data + debt.agg_data
+total_data = debt.agg_data
 
 plt.plot(total_data["Current worth"], color='b')
 #plt.plot(total_data["Spent"], color='b', alpha=0.5)

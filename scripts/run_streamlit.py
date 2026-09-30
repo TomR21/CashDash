@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.ticker import FuncFormatter
 import pandas as pd
+import numpy as np
 import streamlit as st
 
 
@@ -50,6 +51,50 @@ def create_growth_figure(df: pd.DataFrame) -> Figure:
     ax.spines['left'].set_visible(False)
 
     return fig
+
+
+def create_nested_allocation_pie(df_dict: dict[str, pd.DataFrame], metadata: pd.DataFrame, asset_sel: list[bool]) -> Figure:
+    
+    # Determines pie radius size of both pie's
+    size = 0.3
+
+    # Obtain latest worth for each included stocks and savings asset type
+    df = metadata.copy().sort_values(["ASSET_TYPE", "COMPANY"])
+    df["Current worth"] = 0.
+    for idx, row in df.iterrows():
+        df.loc[idx, "Current worth"] = df_dict[row["FILENAME"]]["Current worth"].iloc[-2] #TODO: readjust to -1
+
+    # Obtain current worth of all included assets per type and per company
+    asset_sel = [x for x in asset_sel if x != "Debt"]
+    asset_vals = df[(df["ASSET_TYPE"].isin(asset_sel)) & (df["TO_INCLUDE"])].groupby("ASSET_TYPE")["Current worth"].sum()
+    company_vals = df[(df["ASSET_TYPE"].isin(asset_sel)) & (df["TO_INCLUDE"])].groupby(["ASSET_TYPE", "COMPANY"])["Current worth"].sum()
+        
+    # Create figure and colors
+    fig, ax = plt.subplots(facecolor='#0E1117')
+    tab20c = plt.color_sequences["tab20c"]
+    outer_colors_indices = [x*4 for x in range(len(asset_vals.index.unique()))]
+    inner_colors_indices = [[n*4 + x+1 for x in range(len(company_vals.loc[asset_sel[n]].index))] 
+                                for n in range(len(asset_vals.index.unique()))]
+    outer_colors = [tab20c[i] for i in outer_colors_indices]
+    inner_colors = [tab20c[i] for i in np.concatenate(inner_colors_indices).tolist()]
+    
+    # Plot pie charts
+    ax.pie(asset_vals, radius=1, colors=outer_colors, autopct='%1.0f%%', pctdistance=1-(size/2),
+            textprops={"weight": "bold"}, wedgeprops=dict(width=size, edgecolor='w'), labels=asset_vals.index)
+    
+    wedges, labels = ax.pie(company_vals, radius=1-size, labeldistance=1-(size), colors=inner_colors, 
+            textprops={"size": 8, "weight": "bold", "color": "black"},
+            wedgeprops=dict(width=size, edgecolor='w'), labels=company_vals.index.get_level_values(1))
+    
+    # Rotate inner labels to be diagonal to angle
+    for ea, eb in zip(wedges, labels):
+        mang =(ea.theta1 + ea.theta2)/2.  # get mean_angle of the wedge
+        eb.set_rotation(mang+270)         # rotate the label by (mean_angle + 270)
+        eb.set_va("center")
+        eb.set_ha("center")
+    
+    ax.set(aspect="equal", title='Pie plot with `ax.pie`')
+    return fig   
 
 
 # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$    APP LAYOUT SKELETON       $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
@@ -100,4 +145,5 @@ with net_worth_area:
 
 with chart_area:
     st.pyplot(create_growth_figure(df))
+    st.pyplot(create_nested_allocation_pie(accumulator.data_dict, meta, asset_type_sel))
     #st.dataframe(df.tail(10), width='stretch')
