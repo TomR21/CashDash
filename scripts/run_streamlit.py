@@ -42,7 +42,7 @@ def create_growth_figure(df: pd.DataFrame) -> Figure:
     ax.get_yaxis().set_major_formatter(FuncFormatter(
         lambda x, _: "€ " + str(int(x/1000)) + "k"
     ))
-    ax.tick_params(axis=u'both', which=u'both',length=0)
+    ax.tick_params(axis='both', which='both',length=0)
     
     # Remove frame border lines
     ax.spines['top'].set_visible(False)
@@ -82,18 +82,18 @@ def create_nested_allocation_pie(df_dict: dict[str, pd.DataFrame], metadata: pd.
     def autopct_format(values):
         total = sum(values)
         def my_format(pct):
-            val = int(round(pct*total/100000)) # recalculate value for each piece (cannot use values)
-            return '€{v}k\n{f:.0%}'.format(v=val, f=pct/100)
+            val = round(pct*total/100000) # recalculate value for each piece (cannot use values)
+            return f'€{val}k\n{pct/100:.0%}'
         return my_format
     
     # Plot pie charts
     ax.pie(asset_vals, radius=1, colors=outer_colors, 
                 autopct=autopct_format(asset_vals), pctdistance=1-(size/2), textprops={"weight": "bold"},
-                wedgeprops=dict(width=size, edgecolor='w'), labels=asset_vals.index)
+                wedgeprops={"width": size, "edgecolor": 'w'}, labels=asset_vals.index)
         
     wedges, labels = ax.pie(company_vals, radius=1-size, labeldistance=1-(size), colors=inner_colors, 
             textprops={"size": 8, "weight": "bold", "color": "black"},
-            wedgeprops=dict(width=size, edgecolor='w'), labels=company_vals.index.get_level_values(1))
+            wedgeprops={"width": size, "edgecolor": 'w'}, labels=company_vals.index.get_level_values(1))
     
     # Rotate inner labels to be diagonal to angle
     for ea, eb in zip(wedges, labels):
@@ -147,7 +147,7 @@ try:
 except ValueError:
     st.warning("Currently no financial data is selected. Select at least 1 owner and 1 asset type to view the information. ")
 
-# 
+# Calculate aggegrate data to fill plots
 df = accumulator.calc_agg_data()
 
 # Fill containers with aggregated data

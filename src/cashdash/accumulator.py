@@ -1,11 +1,13 @@
-from cashdash.asset_classes import Savings, Stocks, Debt
-from pathlib import Path
-import pandas as pd
 import json
+from pathlib import Path
+
+import pandas as pd
+
+from cashdash.asset_classes import Debt, Savings, Stocks
 
 
-# 
-class Accumulator():
+# Retrieves all asset_classes data and keeps track of included visualization data in self.metadata
+class Accumulator:
     
     def __init__(self) -> None:
         base_dir = str(Path.cwd())
@@ -21,7 +23,7 @@ class Accumulator():
         
         # Obtain account data and store owner, asset type and company name
         include_list = []
-        data_dict = dict()
+        data_dict = {}
         for owner in self.assets:
             for asset_type in self.assets[owner]:
                 for company in self.assets[owner][asset_type]:

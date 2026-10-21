@@ -1,9 +1,10 @@
+import json
 from abc import ABC, abstractmethod
 from pathlib import Path
-import pandas as pd
+
 import numpy as np
+import pandas as pd
 import yfinance as yf
-import json
 
 
 class AssetClass(ABC):
@@ -21,17 +22,17 @@ class AssetClass(ABC):
     @abstractmethod
     def load_data(self) -> None:
         """ Loads raw dataset from file and stores it within class variable. """
-        pass
+        pass  # noqa: PIE790
     
     @abstractmethod
     def calc_agg_data(self) -> None:
         """ Calculates the aggregated calculated values from raw dataset and stores it within new class variable. """
-        pass
+        pass # noqa: PIE790
     
     @abstractmethod
     def get_agg_data(self) -> pd.DataFrame:
         """ Returns the aggregated calculated values stored within the class. """
-        pass
+        pass # noqa: PIE790
 
 
 class Savings(AssetClass):
