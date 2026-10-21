@@ -1,11 +1,11 @@
-from cashdash.accumulator import Accumulator
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import streamlit as st
 from matplotlib.figure import Figure
 from matplotlib.ticker import FuncFormatter
-import pandas as pd
-import numpy as np
-import streamlit as st
 
+from cashdash.accumulator import Accumulator
 
 # Page config settings
 st.set_page_config(page_title="Portfolio")

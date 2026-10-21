@@ -9,6 +9,9 @@
 
 
 
+CHECK FOR DIFFERENCES BETWEEN CURRENT GITHUB STREAMLIT BRANCH AND DRIVE FOLDER!!!!
+
+
 
 ## Ideas
 - Create class which stores all different assetclasses, calculates total of all input classes. 

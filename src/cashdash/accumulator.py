@@ -9,7 +9,7 @@ class Accumulator():
     
     def __init__(self) -> None:
         base_dir = str(Path.cwd())
-        with open(base_dir + r"\config\asset_types.json", 'r') as f:
+        with open(base_dir + r"/config/asset_types.json", 'r') as f:
             self.assets = json.load(f)
             
             

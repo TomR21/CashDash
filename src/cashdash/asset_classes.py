@@ -10,7 +10,7 @@ class AssetClass(ABC):
     
     # Load setting parameters
     base_dir = str(Path.cwd())
-    with open(base_dir + r"\config\settings.json", 'r') as f:
+    with open(base_dir + r"/config/settings.json", 'r') as f:
         settings = json.load(f)
     
     # Get settings parameter required for all child classes 
@@ -37,7 +37,7 @@ class AssetClass(ABC):
 class Savings(AssetClass):
 
     def __init__(self, filename: str) -> None:
-        self.data_file_path: str = super().__getattribute__("base_dir") + r"\data\raw\\" + filename
+        self.data_file_path: str = super().__getattribute__("base_dir") + r"/data/raw/" + filename
         self.agg_data: pd.DataFrame | None = None
     
     
@@ -87,7 +87,7 @@ class Savings(AssetClass):
 class Stocks(AssetClass):
     
     def __init__(self, filename: str) -> None:
-        self.data_file_path: str = super().__getattribute__("base_dir") + r"\data\raw\\" + filename
+        self.data_file_path: str = super().__getattribute__("base_dir") + r"/data/raw/" + filename
         self.agg_data: pd.DataFrame | None = None
         
     def load_data(self) -> None:
@@ -171,7 +171,7 @@ class Stocks(AssetClass):
 class Debt(AssetClass):
     
     def __init__(self, filename: str) -> None:
-        self.data_file_path: str = super().__getattribute__("base_dir") + r"\data\raw\\" + filename
+        self.data_file_path: str = super().__getattribute__("base_dir") + r"/data/raw/" + filename
         self.agg_data: pd.DataFrame | None = None
         
         
